@@ -29,7 +29,7 @@ def get_library_spectrum(spectrum_id):
         # First try the cache
         SERVER_URL = "https://gnps-external.ucsd.edu/gnpsspectrum?SpectrumID="
         url = SERVER_URL + spectrum_id
-        r = requests.get(url)
+        r = requests.get(url, timeout=10)
         r.raise_for_status()
         return r.json()
     except:
