@@ -161,6 +161,10 @@ def add_clusterinfo_summary_to_graph(G, cluster_info_summary_filename):
     ("Best Ion", "string"), \
     ("neutral M mass", "float"), \
     ("MS2 Verification Comment", "string"), \
+    ("intensity_measure", "string"), \
+    ("ion_mobility", "float"), \
+    ("ion_mobility_unit", "string"), \
+    ("ccs", "float"), \
     ("ProteoSAFeClusterLink", "string"), \
     ("GNPSLinkout_Cluster", "string"), \
     ("GNPSLinkout_Network", "string"), ("componentindex", "string")]
