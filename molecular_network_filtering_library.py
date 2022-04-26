@@ -114,8 +114,8 @@ def add_additional_edges(G, path_to_supplemental_edges):
             node1 = additional_edge_row["ID1"]
             node2 = additional_edge_row["ID2"]
             
-            node1_mz = G.node[node1]["precursor mass"]
-            node2_mz = G.node[node2]["precursor mass"]
+            node1_mz = G.node[str(node1)]["precursor mass"]
+            node2_mz = G.node[str(node2)]["precursor mass"]
 
             mass_difference = float(node1_mz) - float(node2_mz)
 
