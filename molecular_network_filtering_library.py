@@ -11,6 +11,8 @@ import networkx as nx
 import constants_network as CONST
 
 import pandas as pd
+import traceback
+
 
 def loading_network(filename, hasHeaders=False, edgetype="Cosine"):
     node1_list = []
@@ -101,7 +103,9 @@ def loading_network(filename, hasHeaders=False, edgetype="Cosine"):
     return G
 
 def add_additional_edges(G, path_to_supplemental_edges):
-    edge_list = ming_fileio_library.parse_table_with_headers_object_list(path_to_supplemental_edges, delimiter=",")
+    #edge_list = ming_fileio_library.parse_table_with_headers_object_list(path_to_supplemental_edges, delimiter=",")
+    edges_df = pd.read_csv(path_to_supplemental_edges, sep=None)
+    edge_list = edges_df.to_dict(orient="records")
 
     edges_to_add = []
 
@@ -132,6 +136,7 @@ def add_additional_edges(G, path_to_supplemental_edges):
             edges_to_add.append((node1, node2, edge_key, edge_object))
         except:
             print("Error Adding Edge")
+            print(traceback.format_exc())
             continue
 
     G.add_edges_from(edges_to_add)
