@@ -24,7 +24,7 @@ def get_adduct_mass(exact_mass, adduct):
         return M/3 + 8.334590, 3
 
     if adduct == ('M+H+2Na'):
-        return M/3 + 15.7661904, 3
+        return M/3 + 15.661906, 3
 
     if adduct == ('M+3Na'):
         return M/3 + 22.989218, 3
@@ -57,7 +57,7 @@ def get_adduct_mass(exact_mass, adduct):
         return M + 1.007276, 1
 
     if adduct == ('M+H-H2O'):
-        return M + 19.01839 + 1.007276 + 1.007276, 1
+        return M - 17.003288, 1
 
     if adduct == ('M+NH4'):
         return M + 18.033823, 1
@@ -114,7 +114,7 @@ def get_adduct_mass(exact_mass, adduct):
         return 2*M + 64.015765, 1
 
     if adduct == ('M-H2O+H'):
-        return M - 17.00384, 1
+        return M - 17.003288, 1
 
     if adduct == ('M-3H'):
         return M/3 - 1.007276, -3
@@ -123,19 +123,19 @@ def get_adduct_mass(exact_mass, adduct):
         return M/2 - 1.007276, -2
 
     if adduct == ('M-H2O-H'):
-        return M - 19.01839, -1
+        return M - 19.017841, -1
 
     if adduct == ('M-H'):
         return M - 1.007276, -1
 
     if adduct == ('M+Na-2H'):
-        return M + 20.974666, -2
+        return M + 20.974666, -1
 
     if adduct == ('M+Cl'):
-        return M + 34.969402, 1
+        return M + 34.969402, -1
 
     if adduct == ('M+K-2H'):
-        return M + 36.948606, -2
+        return M + 36.948606, -1
 
     if adduct == ('M+FA-H'):
         return M + 44.998201, -1
@@ -144,7 +144,7 @@ def get_adduct_mass(exact_mass, adduct):
         return M + 59.013851, -1
 
     if adduct == ('M+Br'):
-        return M + 78.918885, 1
+        return M + 78.918885, -1
 
     if adduct == ('M+TFA-H'):
         return M + 112.985586, -1
