@@ -114,8 +114,8 @@ def add_additional_edges(G, path_to_supplemental_edges):
             node1 = str(additional_edge_row["ID1"])
             node2 = str(additional_edge_row["ID2"])
             
-            node1_mz = G.node[node1]["precursor mass"]
-            node2_mz = G.node[node2]["precursor mass"]
+            node1_mz = G.nodes[node1]["precursor mass"]
+            node2_mz = G.nodes[node2]["precursor mass"]
 
             mass_difference = float(node1_mz) - float(node2_mz)
 
@@ -148,7 +148,7 @@ def add_clusterinfo_summary_to_graph(G, cluster_info_summary_filename):
     row_count, table_data = ming_fileio_library.parse_table_with_headers(cluster_info_summary_filename)
 
     #Setting default metadata for nodes in network
-    #for node in G.node:
+    #for node in G.nodes:
     #    print(node)
 
     default_listed_columns = [("precursor mass", "float"), \
@@ -187,43 +187,43 @@ def add_clusterinfo_summary_to_graph(G, cluster_info_summary_filename):
                 type_name = default_column[1]
                 try:
                     if type_name == "float":
-                        G.node[cluster_index][key_name] = float(table_data[key_name][i])
+                        G.nodes[cluster_index][key_name] = float(table_data[key_name][i])
                     elif type_name == "int":
-                        G.node[cluster_index][key_name] = int(table_data[key_name][i])
+                        G.nodes[cluster_index][key_name] = int(table_data[key_name][i])
                     elif type_name == "string":
-                        G.node[cluster_index][key_name] = str(table_data[key_name][i])
+                        G.nodes[cluster_index][key_name] = str(table_data[key_name][i])
                 except:
                     if type_name == "float":
-                        G.node[cluster_index][key_name] = float("0.0")
+                        G.nodes[cluster_index][key_name] = float("0.0")
                     elif type_name == "int":
-                        G.node[cluster_index][key_name] = int("0")
+                        G.nodes[cluster_index][key_name] = int("0")
                     elif type_name == "string":
-                        G.node[cluster_index][key_name] = str("N/A")
+                        G.nodes[cluster_index][key_name] = str("N/A")
 
             for group_name in group_columns:
                 try:
-                    G.node[cluster_index][group_name] = float(table_data[group_name][i])
+                    G.nodes[cluster_index][group_name] = float(table_data[group_name][i])
                 except:
-                    G.node[cluster_index][group_name] = 0.0
+                    G.nodes[cluster_index][group_name] = 0.0
 
             #Looking for all the groups
             for header in table_data:
                 if header.find("GNPSGROUP") != -1:
                     try:
-                        G.node[cluster_index][header] = float(table_data[header][i])
+                        G.nodes[cluster_index][header] = float(table_data[header][i])
                     except:
                         try:
-                            G.node[cluster_index][header] = int(table_data[header][i])
+                            G.nodes[cluster_index][header] = int(table_data[header][i])
                         except:
-                            G.node[cluster_index][header] = -1
+                            G.nodes[cluster_index][header] = -1
 
             #Looking for all Attributes
             for header in table_data:
                 if header.find("ATTRIBUTE_") != -1:
                     try:
-                        G.node[cluster_index][header] = table_data[header][i]
+                        G.nodes[cluster_index][header] = table_data[header][i]
                     except:
-                        G.node[cluster_index][header] = ""
+                        G.nodes[cluster_index][header] = ""
 
             #Looking for optional columns
             for optional_column in optional_listed_columns:
@@ -233,18 +233,18 @@ def add_clusterinfo_summary_to_graph(G, cluster_info_summary_filename):
                 if key_name in table_data:
                     try:
                         if type_name == "float":
-                            G.node[cluster_index][key_name] = float(table_data[key_name][i])
+                            G.nodes[cluster_index][key_name] = float(table_data[key_name][i])
                         elif type_name == "int":
-                            G.node[cluster_index][key_name] = int(table_data[key_name][i])
+                            G.nodes[cluster_index][key_name] = int(table_data[key_name][i])
                         elif type_name == "string":
-                            G.node[cluster_index][key_name] = str(table_data[key_name][i])
+                            G.nodes[cluster_index][key_name] = str(table_data[key_name][i])
                     except:
                         if type_name == "float":
-                            G.node[cluster_index][key_name] = float("0.0")
+                            G.nodes[cluster_index][key_name] = float("0.0")
                         elif type_name == "int":
-                            G.node[cluster_index][key_name] = int("0")
+                            G.nodes[cluster_index][key_name] = int("0")
                         elif type_name == "string":
-                            G.node[cluster_index][key_name] = str("N/A")
+                            G.nodes[cluster_index][key_name] = str("N/A")
 
 
 
@@ -267,34 +267,34 @@ def add_library_search_results_to_graph(G, library_search_filename, annotation_p
     for record in table_data:
         cluster_index = str(record["#Scan#"])
 
-        if cluster_index in G.node:
-            G.node[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"].encode('ascii', 'ignore'))
-            G.node[cluster_index][annotation_prefix + "Compound_Name"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["Compound_Name"])]).replace("\\", "\\\\"))
-            G.node[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"])
-            G.node[cluster_index][annotation_prefix + "INCHI"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["INCHI"])]).replace("\\", "\\\\"))
-            G.node[cluster_index][annotation_prefix + "Smiles"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["Smiles"])]).replace("\\", "\\\\"))
-            G.node[cluster_index][annotation_prefix + "MQScore"] = str(record["MQScore"])
-            G.node[cluster_index][annotation_prefix + "MassDiff"] = str(record["MassDiff"])
-            G.node[cluster_index][annotation_prefix + "MZErrorPPM"] = str(record["MZErrorPPM"])
-            G.node[cluster_index][annotation_prefix + "SharedPeaks"] = str(record["SharedPeaks"])
-            G.node[cluster_index][annotation_prefix + "tags"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["tags"])]).replace("\\", "\\\\"))
-            G.node[cluster_index][annotation_prefix + "Library_Class"] = str(record["Library_Class"])
-            G.node[cluster_index][annotation_prefix + "Instrument"] = str(record["Instrument"])
-            G.node[cluster_index][annotation_prefix + "IonMode"] = str(record["IonMode"])
-            G.node[cluster_index][annotation_prefix + "Ion_Source"] = str(record["Ion_Source"])
-            G.node[cluster_index][annotation_prefix + "PI"] = str(record["PI"])
-            G.node[cluster_index][annotation_prefix + "Data_Collector"] = str(record["Data_Collector"])
-            G.node[cluster_index][annotation_prefix + "Compound_Source"] = str(record["Compound_Source"])
-            G.node[cluster_index][annotation_prefix + "SpectrumID"] = str(record["SpectrumID"])
-            G.node[cluster_index][annotation_prefix + "GNPSLibraryURL"] = "http://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=" + record["SpectrumID"]
+        if cluster_index in G.nodes:
+            G.nodes[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"].encode('ascii', 'ignore'))
+            G.nodes[cluster_index][annotation_prefix + "Compound_Name"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["Compound_Name"])]).replace("\\", "\\\\"))
+            G.nodes[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"])
+            G.nodes[cluster_index][annotation_prefix + "INCHI"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["INCHI"])]).replace("\\", "\\\\"))
+            G.nodes[cluster_index][annotation_prefix + "Smiles"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["Smiles"])]).replace("\\", "\\\\"))
+            G.nodes[cluster_index][annotation_prefix + "MQScore"] = str(record["MQScore"])
+            G.nodes[cluster_index][annotation_prefix + "MassDiff"] = str(record["MassDiff"])
+            G.nodes[cluster_index][annotation_prefix + "MZErrorPPM"] = str(record["MZErrorPPM"])
+            G.nodes[cluster_index][annotation_prefix + "SharedPeaks"] = str(record["SharedPeaks"])
+            G.nodes[cluster_index][annotation_prefix + "tags"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["tags"])]).replace("\\", "\\\\"))
+            G.nodes[cluster_index][annotation_prefix + "Library_Class"] = str(record["Library_Class"])
+            G.nodes[cluster_index][annotation_prefix + "Instrument"] = str(record["Instrument"])
+            G.nodes[cluster_index][annotation_prefix + "IonMode"] = str(record["IonMode"])
+            G.nodes[cluster_index][annotation_prefix + "Ion_Source"] = str(record["Ion_Source"])
+            G.nodes[cluster_index][annotation_prefix + "PI"] = str(record["PI"])
+            G.nodes[cluster_index][annotation_prefix + "Data_Collector"] = str(record["Data_Collector"])
+            G.nodes[cluster_index][annotation_prefix + "Compound_Source"] = str(record["Compound_Source"])
+            G.nodes[cluster_index][annotation_prefix + "SpectrumID"] = str(record["SpectrumID"])
+            G.nodes[cluster_index][annotation_prefix + "GNPSLibraryURL"] = "http://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=" + record["SpectrumID"]
 
             try:
                 # ion identity networking specific:
                 # check best ion (ion identity) and adduct for similarity
-                adduct = G.node[cluster_index][annotation_prefix + CONST.NODE.ADDUCT_LIB_ATTRIBUTE]
-                ion_identity = G.node[cluster_index][CONST.NODE.IIN_ADDUCT_ATTRIBUTE]
+                adduct = G.nodes[cluster_index][annotation_prefix + CONST.NODE.ADDUCT_LIB_ATTRIBUTE]
+                ion_identity = G.nodes[cluster_index][CONST.NODE.IIN_ADDUCT_ATTRIBUTE]
                 if ion_identity is not None and len(ion_identity)>0 and adduct is not None and len(adduct) > 0:
-                    G.node[cluster_index][annotation_prefix + CONST.NODE.IIN_ADDUCT_EQUALS_LIB_ATTRIBUTE] = equal_adducts(adduct, ion_identity)
+                    G.nodes[cluster_index][annotation_prefix + CONST.NODE.IIN_ADDUCT_EQUALS_LIB_ATTRIBUTE] = equal_adducts(adduct, ion_identity)
             except:
                 pass
 
@@ -386,7 +386,7 @@ def filter_top_k(G, top_k):
     print("Starting Numer of Edges", len(G.edges()))
 
     node_cutoff_score = {}
-    for node in G.nodes():
+    for node in G.nodess():
         node_edges = G.edges((node), data=True)
         node_edges = sorted(node_edges, key=lambda edge: edge[2]["cosine_score"], reverse=True)
 
