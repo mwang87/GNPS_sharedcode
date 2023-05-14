@@ -105,7 +105,7 @@ class SpectrumCollection:
 
         return match_list[:min(len(match_list), top_k)]
 
-    #updates both the scans and the index
+    #updates both the scans and the index, starting from 1
     def make_scans_sequential(self):
         self.scandict = {}
         scan = 1
@@ -114,6 +114,21 @@ class SpectrumCollection:
             spectrum.index = scan - 1
             self.scandict[scan] = spectrum
             scan += 1
+
+    def make_scans_contiguous(self):
+        # Making sure if scans are monotonically increasing but have holes, we add in the holes with no peaks
+        new_spectrum_list = []
+        scan = 1
+        
+        for spectrum in self.spectrum_list:
+            while scan < spectrum.scan:
+                new_spectrum = Spectrum("", scan, scan, [], 0.0, 0, 1)
+                new_spectrum_list.append(new_spectrum)
+                scan += 1
+            new_spectrum_list.append(spectrum)
+            scan += 1
+        
+        self.spectrum_list = new_spectrum_list
 
     #outputs to an MGF and redoes the scan numbering
     def save_to_mgf(self, output_mgf, renumber_scans=True):
