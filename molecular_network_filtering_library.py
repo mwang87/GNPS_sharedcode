@@ -386,7 +386,7 @@ def filter_top_k(G, top_k):
     print("Starting Numer of Edges", len(G.edges()))
 
     node_cutoff_score = {}
-    for node in G.nodess():
+    for node in G.nodes():
         node_edges = G.edges((node), data=True)
         node_edges = sorted(node_edges, key=lambda edge: edge[2]["cosine_score"], reverse=True)
 

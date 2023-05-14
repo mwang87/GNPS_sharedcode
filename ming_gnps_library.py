@@ -27,7 +27,7 @@ def pulldown_all_continuous_libraries():
 def get_library_spectrum(spectrum_id):
     try:
         # First try the cache
-        SERVER_URL = "https://gnps-external.ucsd.edu/gnpsspectrum?SpectrumID="
+        SERVER_URL = "https://external.gnps2.org/gnpsspectrum?SpectrumID="
         url = SERVER_URL + spectrum_id
         r = requests.get(url, timeout=10)
         r.raise_for_status()
