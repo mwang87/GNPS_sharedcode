@@ -102,6 +102,53 @@ def loading_network(filename, hasHeaders=False, edgetype="Cosine"):
 
     return G
 
+# This will add the singletons to the network if they are not in the node list
+def add_singletons_to_network(G, cluster_info_summary_filename):
+    # Reading cluster summary
+    clustersummary_df = pd.read_csv(cluster_info_summary_filename, sep="\t")
+
+    # get nodes in G
+    nodes_in_G = set(G.nodes())
+
+    # get nodes in clustersummary
+    nodes_in_clustersummary = set(clustersummary_df["cluster index"])
+
+    # get nodes in clustersummary but not in G
+    nodes_to_add = nodes_in_clustersummary - nodes_in_G
+
+    # add nodes to G by adding in edges with self loops
+    intermediate_graph_nodes = set()
+    intermediate_edges_to_add = []
+
+    for node in nodes_to_add:
+        edge_object = {}
+        edge_object["node1"] = str(node)
+        edge_object["node2"] = str(node)
+        edge_object["mass_difference"] = 0
+        edge_object["property1"] = 0
+        edge_object["cosine_score"] = 0
+        edge_object["explained_intensity"] = 0
+        edge_object["component"] = -1
+        edge_object["EdgeType"] = "Cosine"
+        edge_object["EdgeAnnotation"] = ""
+        edge_object["EdgeScore"] = 0
+
+        edge_key = str(node) + "-" + str(node)
+
+        intermediate_graph_nodes.add(edge_object["node1"])
+        intermediate_graph_nodes.add(edge_object["node2"])
+
+        # set key to edgetype for options to remove edge later in case multiple edges are present
+        edge_key_for_dict = CONST.EDGE.COSINE_TYPE
+        intermediate_edges_to_add.append((edge_object["node1"], edge_object["node2"], edge_key_for_dict, edge_object))
+
+    G.add_nodes_from(intermediate_graph_nodes)
+    G.add_edges_from(intermediate_edges_to_add)
+
+    return G
+    
+
+
 def add_additional_edges(G, path_to_supplemental_edges):
     #edge_list = ming_fileio_library.parse_table_with_headers_object_list(path_to_supplemental_edges, delimiter=",")
     edges_df = pd.read_csv(path_to_supplemental_edges, sep=None)
