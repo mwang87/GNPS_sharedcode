@@ -42,6 +42,13 @@ def get_mangled_file_mapping(params):
         mangled_mapping[mangled_name] = original_name
 
     return mangled_mapping
+    
+def get_mangled_file_mapping_from_folder(spectrum_folder):
+    all_input_filenames = os.listdir(spectrum_folder)
+    mangled_mapping = {}
+    for filename in all_input_filenames:
+        mangled_mapping[filename] = os.path.join(spectrum_folder, filename)
+    return mangled_mapping
 
 def get_stripped_extenstion_file_mapping(params):
     all_mappings = get_mangled_file_mapping(params)
