@@ -33,6 +33,21 @@ def parse_xml_file(input_file):
     return key_value_pairs
 
 def get_mangled_file_mapping(params):
+    """_summary_
+
+    Args:
+        params (Dict):  dict with an item containing the "upload_file_mapping key" and the files 
+
+    Returns:
+        _type_: dict containing the mangled info of the files. 
+    
+        Raises
+    ------
+    KeyError:
+        If upload_file_mapping is not present
+    TypeError:
+        If upload_file_mapping is not a dict
+    """
     all_mappings = params["upload_file_mapping"]
     mangled_mapping = {}
     for mapping in all_mappings:
@@ -44,6 +59,15 @@ def get_mangled_file_mapping(params):
     return mangled_mapping
     
 def get_mangled_file_mapping_from_folder(spectrum_folder):
+    """_summary_
+
+    Args:
+        spectrum_folder (string): folder containing files and that will be saved in a dict with their name as a key and the full path as value. 
+
+    Returns:
+        _type_: dict containing the mangled info of the files. 
+    
+    """
     all_input_filenames = os.listdir(spectrum_folder)
     mangled_mapping = {}
     for filename in all_input_filenames:
@@ -51,6 +75,7 @@ def get_mangled_file_mapping_from_folder(spectrum_folder):
     return mangled_mapping
 
 def get_stripped_extenstion_file_mapping(params):
+    
     all_mappings = get_mangled_file_mapping(params)
     output_mapping = {}
     for mangled_name in all_mappings:
