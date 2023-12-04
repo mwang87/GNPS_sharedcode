@@ -68,7 +68,7 @@ def get_mangled_file_mapping_from_folder(spectrum_folder):
         _type_: dict containing the mangled info of the files. 
     
     """
-    all_input_filenames = os.listdir(spectrum_folder)
+    all_input_filenames = [filename for filename in os.listdir(spectrum_folder) if os.path.isfile(os.path.join(spectrum_folder, filename))]
     mangled_mapping = {}
     for filename in all_input_filenames:
         mangled_mapping[filename] = os.path.join(spectrum_folder, filename)
