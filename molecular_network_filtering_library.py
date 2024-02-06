@@ -317,7 +317,7 @@ def add_library_search_results_to_graph(G, library_search_filename, annotation_p
         cluster_index = str(record["#Scan#"])
 
         if cluster_index in G.nodes:
-            G.nodes[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"].encode('ascii', 'ignore'))
+            G.nodes[cluster_index][annotation_prefix + "Adduct"] = str(str(record["Adduct"]).encode('ascii', 'ignore'))
             G.nodes[cluster_index][annotation_prefix + "Compound_Name"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["Compound_Name"])]).replace("\\", "\\\\"))
             G.nodes[cluster_index][annotation_prefix + "Adduct"] = str(record["Adduct"])
             G.nodes[cluster_index][annotation_prefix + "INCHI"] = str(''.join([j if ord(j) < 128 else ' ' for j in str(record["INCHI"])]).replace("\\", "\\\\"))
