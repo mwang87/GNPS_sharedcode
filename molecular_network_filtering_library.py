@@ -296,6 +296,12 @@ def add_clusterinfo_summary_to_graph(G, cluster_info_summary_filename):
                             G.nodes[cluster_index][key_name] = str("N/A")
 
 
+def _populate_node_attribute(G, cluster_index, record, old_field, new_field, annotation_prefix=""):
+    try:
+        print(G.nodes[cluster_index])
+        G.nodes[cluster_index][annotation_prefix + new_field] = str(record[old_field])
+    except:
+        pass
 
 def add_library_search_results_to_graph(G, library_search_filename, annotation_prefix=""):
     table_data_df = pd.DataFrame()
@@ -336,6 +342,16 @@ def add_library_search_results_to_graph(G, library_search_filename, annotation_p
             G.nodes[cluster_index][annotation_prefix + "Compound_Source"] = str(record["Compound_Source"])
             G.nodes[cluster_index][annotation_prefix + "SpectrumID"] = str(record["SpectrumID"])
             G.nodes[cluster_index][annotation_prefix + "GNPSLibraryURL"] = "http://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=" + record["SpectrumID"]
+
+            # Getting ClassyFire
+            _populate_node_attribute(G, cluster_index, record, "superclass", "superclass", annotation_prefix)
+            _populate_node_attribute(G, cluster_index, record, "class", "class", annotation_prefix)
+            _populate_node_attribute(G, cluster_index, record, "subclass", "subclass", annotation_prefix)
+
+            # Getting NP Classifier
+            _populate_node_attribute(G, cluster_index, record, "npclassifier_superclass", "npclassifier_superclass", annotation_prefix)
+            _populate_node_attribute(G, cluster_index, record, "npclassifier_class", "npclassifier_class", annotation_prefix)
+            _populate_node_attribute(G, cluster_index, record, "npclassifier_pathway", "npclassifier_pathway", annotation_prefix)
 
             try:
                 # ion identity networking specific:
