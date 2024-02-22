@@ -8,6 +8,15 @@ import molecular_network_filtering_library
 import networkx as nx
 import argparse
 
+def _update_node_attribute(new_G, G, node, attribute, new_attribute):
+    if attribute in G.nodes[node]:
+        new_G.nodes[node][new_attribute] = G.nodes[node][attribute]
+
+        #print("ZZZZ", attribute, new_attribute, G.nodes[node])
+    else:
+        new_G.nodes[node][new_attribute] = ""
+
+    
 
 def convert_network(G):
     # This helps to reformat from the standard GNPS library to be able to display in GNPS2
@@ -54,9 +63,20 @@ def convert_network(G):
         node_to_component[node] = G.nodes[node]["component"]
         
         if "Compound_Name" in G.nodes[node]:
-            new_G.nodes[node]["library_compound_name"] = G.nodes[node]["Compound_Name"]
-            new_G.nodes[node]["library_SMILES"] = G.nodes[node]["Smiles"]
-            new_G.nodes[node]["library_InChI"] = G.nodes[node]["INCHI"]
+            _update_node_attribute(new_G, G, node, "Compound_Name", "library_compound_name")
+            _update_node_attribute(new_G, G, node, "Smiles", "library_SMILES")
+            _update_node_attribute(new_G, G, node, "INCHI", "library_InChI")
+
+            # Getting ClassyFire
+            _update_node_attribute(new_G, G, node, "superclass", "library_classyfire_superclass")
+            _update_node_attribute(new_G, G, node, "class", "library_classyfire_class")
+            _update_node_attribute(new_G, G, node, "subclass", "library_classyfire_subclass")
+
+            _update_node_attribute(new_G, G, node, "npclassifier_superclass", "library_npclassifier_superclass")
+            _update_node_attribute(new_G, G, node, "npclassifier_class", "library_npclassifier_class")
+            _update_node_attribute(new_G, G, node, "npclassifier_pathway", "library_npclassifier_pathway")
+
+
 
     # Fixing Edges
     for node1, node2, data in G.edges.data():
@@ -106,7 +126,10 @@ def main():
     # Adding the singletons into the network
     molecular_network_filtering_library.add_singletons_to_network(G, args.input_clusterinfo_summary)
 
+    # Adding Cluster Info
     molecular_network_filtering_library.add_clusterinfo_summary_to_graph(G, args.input_clusterinfo_summary)
+
+    # Adding Library Matches
     molecular_network_filtering_library.add_library_search_results_to_graph(G, args.input_library_matches)
 
     # Cleaning up network when the clusterinfo summary is not present 
