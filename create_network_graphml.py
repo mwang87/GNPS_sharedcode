@@ -8,6 +8,9 @@ import molecular_network_filtering_library
 import networkx as nx
 import argparse
 
+# inserting path
+sys.path.insert(0, "..")
+
 def _update_node_attribute(new_G, G, node, attribute, new_attribute):
     if attribute in G.nodes[node]:
         new_G.nodes[node][new_attribute] = G.nodes[node][attribute]
