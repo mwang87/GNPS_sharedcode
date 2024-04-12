@@ -43,8 +43,6 @@ def _prep_library_dict(library_summary_df):
 def _enrich_gnps_annotation(output_result_dict):
     spectrum_id = output_result_dict["SpectrumID"]
 
-    print(spectrum_id)
-
     gnps_library_spectrum = _get_gnps_library_spectrum(spectrum_id)
 
     if gnps_library_spectrum is None:
@@ -245,6 +243,8 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
     
     input_results_df = pd.read_csv(input_filename, sep="\t")
 
+    print(input_results_df)
+
     # Here we will try to filter to topk
     if topk is not None:
         try:
@@ -330,12 +330,6 @@ def main():
         library_summary_df = pd.read_csv(args.librarysummary, sep="\t")
     except:
         library_summary_df = None
-
-    if library_summary_df is None:
-        library_summary_df = pd.DataFrame()
-        library_summary_df.to_csv(output_result_filename, sep="\t", index=False)
-
-        exit(0)
 
     enrich_output(input_result_filename, output_result_filename, topk=args.topk, library_summary_df=library_summary_df)
 
