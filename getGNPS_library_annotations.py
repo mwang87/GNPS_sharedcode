@@ -226,6 +226,12 @@ def _enrich_annotations(output_result_dict):
         output_result_dict["npclassifier_class"] = "N/A"
         output_result_dict["npclassifier_pathway"] = "N/A"
 
+    # Adding a USI
+    try:
+        output_result_dict["library_usi"] = "mzspec:GNPS:GNPS-LIBRARY:{}".format(output_result_dict["SpectrumID"])
+    except:
+        output_result_dict["library_usi"] = "No USI"
+
     return output_result_dict
 
 def enrich_output(input_filename, output_filename, topk=None, library_summary_df=None):
