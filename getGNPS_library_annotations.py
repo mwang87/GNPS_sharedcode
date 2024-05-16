@@ -234,7 +234,7 @@ def _enrich_annotations(output_result_dict):
 
     return output_result_dict
 
-def enrich_output(input_filename, output_filename, topk=None, library_summary_df=None):
+def enrich_output(input_filename, output_filename, topk=None, library_summary_df=None, filtertostructures=False):
     library_dict = {}
     if library_summary_df is not None:
         try:
@@ -322,6 +322,11 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
 
         output_list.append(output_result_dict)
 
+    # Here we can filter based upon the structure criteria
+    if filtertostructures is True:
+        # Filtering only if the length of Smiles and InchI are small
+        output_list = [x for x in output_list if len(x["Smiles"]) < 5 and len(x["INCHI"]) < 5]
+
     pd.DataFrame(output_list).to_csv(output_filename, sep="\t", index=False)
 
 def main():
@@ -330,6 +335,9 @@ def main():
     parser.add_argument("output_filename")
     parser.add_argument("--topk", default=None, type=int, help="Top K results per query, default no filter")
     parser.add_argument("--librarysummary", default=None, type=str, help="Library Summary, importnat for non-GNPS libraries")
+    parser.add_argument("--filtertostructures", default="0", type=str, help="Filter to structures only if 1")
+
+
 
     args = parser.parse_args()
 
@@ -342,7 +350,9 @@ def main():
     except:
         library_summary_df = None
 
-    enrich_output(input_result_filename, output_result_filename, topk=args.topk, library_summary_df=library_summary_df)
+    enrich_output(input_result_filename, output_result_filename, topk=args.topk, 
+                    library_summary_df=library_summary_df,
+                    filtertostructures=(args.filtertostructures == "1"))
 
 if __name__ == "__main__":
     main()
