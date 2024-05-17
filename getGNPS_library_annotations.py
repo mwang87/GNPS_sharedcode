@@ -325,7 +325,7 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
     # Here we can filter based upon the structure criteria
     if filtertostructures is True:
         # Filtering only if the length of Smiles and InchI are small
-        output_list = [x for x in output_list if len(x["Smiles"]) < 5 and len(x["INCHI"]) < 5]
+        output_list = [x for x in output_list if len(x["Smiles"]) > 5 or len(x["INCHI"]) > 5]
 
     pd.DataFrame(output_list).to_csv(output_filename, sep="\t", index=False)
 
@@ -336,8 +336,6 @@ def main():
     parser.add_argument("--topk", default=None, type=int, help="Top K results per query, default no filter")
     parser.add_argument("--librarysummary", default=None, type=str, help="Library Summary, importnat for non-GNPS libraries")
     parser.add_argument("--filtertostructures", default="0", type=str, help="Filter to structures only if 1")
-
-
 
     args = parser.parse_args()
 
