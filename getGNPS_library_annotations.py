@@ -190,10 +190,9 @@ def _enrich_annotations(output_result_dict):
     if len(output_result_dict["InChIKey"]) > 5:
         try:
             classyfire_url = "https://classyfire.gnps2.org/entities/{}.json".format(output_result_dict["InChIKey"])
-            r = requests.get(classyfire_url, timeout=10)
+            r = requests.get(classyfire_url, timeout=0.5)
             r.raise_for_status()
             classification_json = r.json()
-
             output_result_dict["superclass"] = classification_json["superclass"]["name"]
             output_result_dict["class"] = classification_json["class"]["name"]
             output_result_dict["subclass"] = classification_json["subclass"]["name"]
@@ -313,7 +312,7 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
             # checking if in library summary
             if library_summary_df is not None:
                 output_result_dict = _enrich_librarysummary_annotations(output_result_dict, library_dict=library_dict)
-
+        
         # Doing further enrichment
         try:
             output_result_dict = _enrich_annotations(output_result_dict)
