@@ -18,7 +18,7 @@ def main():
         for spectrum in reader:
             # We will use the spectrum ID as the key for the dictionary
             spectrum_id = spectrum['params'].get('spectrum_id', spectrum['params'].get('title', "No ID"))
-            compound_name = spectrum['params'].get('compound_name', "No Compound")
+            compound_name = spectrum['params'].get('compound_name', spectrum['params'].get("name", "No Compound"))
             smiles = spectrum['params'].get('smiles', "")
             collision_energy = spectrum['params'].get('collision_energy', 0)
             instrument = spectrum['params'].get('instrument', "")
@@ -44,9 +44,8 @@ def main():
             output_list.append(output_dictionary)
 
     # creating an output df
-    if len(output_list) > 0:
-        output_df = pd.DataFrame(output_list)
-        output_df.to_csv(args.output_summary, sep="\t", index=False)
+    output_df = pd.DataFrame(output_list)
+    output_df.to_csv(args.output_summary, sep="\t", index=False)
 
 if __name__ == "__main__":
     main()
