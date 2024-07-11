@@ -17,7 +17,7 @@ def main():
     with mgf.read(args.library) as reader:
         for spectrum in reader:
             # We will use the spectrum ID as the key for the dictionary
-            spectrum_id = spectrum['params'].get('spectrum_id', spectrum['params'].get('title', "No ID"))
+            spectrum_id = spectrum['params'].get('spectrumid', spectrum['params'].get('title', "No ID"))
             compound_name = spectrum['params'].get('compound_name', spectrum['params'].get("name", "No Compound"))
             smiles = spectrum['params'].get('smiles', "")
             collision_energy = spectrum['params'].get('collision_energy', 0)
