@@ -79,6 +79,12 @@ def convert_network(G):
             _update_node_attribute(new_G, G, node, "npclassifier_class", "library_npclassifier_class")
             _update_node_attribute(new_G, G, node, "npclassifier_pathway", "library_npclassifier_pathway")
 
+            # We'll try to add the library usi
+            try:
+                new_G.nodes[node]["library_usi"] = G.nodes[node]["library_usi"]
+            except:
+                pass
+
 
 
     # Fixing Edges
