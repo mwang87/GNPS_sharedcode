@@ -104,13 +104,13 @@ def _enrich_librarysummary_annotations(output_result_dict, library_dict=None):
     if spectrum_id in library_dict:
         library_spectrum = library_dict[spectrum_id]
 
-        output_result_dict["Compound_Name"] = str(library_spectrum["compound_name"]).replace("\t", "")
-        output_result_dict["Ion_Source"] = str(library_spectrum["ion_source"]).replace("\t", "")
-        output_result_dict["Instrument"] = str(library_spectrum["instrument"]).replace("\t", "")
-        output_result_dict["LibMZ"] = (library_spectrum["precursormz"])
-        output_result_dict["Adduct"] = str(library_spectrum["adduct"]).replace("\t", "")
-        output_result_dict["Charge"] = str(library_spectrum["charge"]).replace("\t", "")
-        output_result_dict["Smiles"] = str(library_spectrum["smiles"]).replace("\t", "")
+        output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", "")).replace("\t", "")
+        output_result_dict["Ion_Source"] = str(library_spectrum.get("ion_source", "")).replace("\t", "")
+        output_result_dict["Instrument"] = str(library_spectrum.get("instrument", "")).replace("\t", "")
+        output_result_dict["LibMZ"] = library_spectrum.get("precursormz", "")
+        output_result_dict["Adduct"] = str(library_spectrum.get("adduct", "")).replace("\t", "")
+        output_result_dict["Charge"] = str(library_spectrum.get("charge", "")).replace("\t", "")
+        output_result_dict["Smiles"] = str(library_spectrum.get("smiles", "")).replace("\t", "")
         
         output_result_dict["INCHI"] = "" # TODO: We should actually convert but we don't have this information now
         output_result_dict["INCHI_AUX"] = "" # TODO: We should actually convert but we don't have this information now
