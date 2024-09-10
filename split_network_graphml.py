@@ -24,7 +24,14 @@ def main():
 
     for i, component in enumerate(components):
         subgraph = G.subgraph(component)
-        component_id = i + 1
+
+        # This component number should come from the file itself
+        # Getting the component number
+        node_id = component.pop()
+        # Getting the compeont from the node in the component
+        component_id = G.nodes[node_id]["component"]
+
+        #component_id = i + 1
 
         output_component_filename = os.path.join(args.output_component_graphml_folder, f"component_{component_id}.graphml")
         nx.write_graphml(subgraph, output_component_filename)
@@ -35,6 +42,9 @@ def main():
         component_dict["number_of_edges"] = subgraph.number_of_edges()
 
         component_list.append(component_dict)
+
+    # Sort this by descending number_of_nodes
+    component_list = sorted(component_list, key=lambda x: x["number_of_nodes"], reverse=True)
 
     # writing the component summary
     component_df = pd.DataFrame(component_list)
