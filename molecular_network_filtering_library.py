@@ -341,7 +341,7 @@ def add_library_search_results_to_graph(G, library_search_filename, annotation_p
             G.nodes[cluster_index][annotation_prefix + "Data_Collector"] = str(record["Data_Collector"])
             G.nodes[cluster_index][annotation_prefix + "Compound_Source"] = str(record["Compound_Source"])
             G.nodes[cluster_index][annotation_prefix + "SpectrumID"] = str(record["SpectrumID"])
-            G.nodes[cluster_index][annotation_prefix + "GNPSLibraryURL"] = "http://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=" + record["SpectrumID"]
+            G.nodes[cluster_index][annotation_prefix + "GNPSLibraryURL"] = "http://gnps.ucsd.edu/ProteoSAFe/gnpslibraryspectrum.jsp?SpectrumID=" + str(record["SpectrumID"])
 
             # Getting ClassyFire
             _populate_node_attribute(G, cluster_index, record, "superclass", "superclass", annotation_prefix)
