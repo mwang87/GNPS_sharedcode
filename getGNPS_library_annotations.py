@@ -101,38 +101,42 @@ def _enrich_gnps_annotation(output_result_dict):
 def _enrich_librarysummary_annotations(output_result_dict, library_dict=None):
     spectrum_id = output_result_dict["SpectrumID"]
 
-    if spectrum_id in library_dict:
+    if library_dict is not None and spectrum_id in library_dict:
         library_spectrum = library_dict[spectrum_id]
+    else:
+        library_spectrum = {}
 
-        output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", "")).replace("\t", "")
-        output_result_dict["Ion_Source"] = str(library_spectrum.get("ion_source", "")).replace("\t", "")
-        output_result_dict["Instrument"] = str(library_spectrum.get("instrument", "")).replace("\t", "")
-        output_result_dict["LibMZ"] = library_spectrum.get("precursormz", "")
-        output_result_dict["Adduct"] = str(library_spectrum.get("adduct", "")).replace("\t", "")
-        output_result_dict["Charge"] = str(library_spectrum.get("charge", "")).replace("\t", "")
-        output_result_dict["Smiles"] = str(library_spectrum.get("smiles", "")).replace("\t", "")
-        
-        output_result_dict["INCHI"] = "" # TODO: We should actually convert but we don't have this information now
-        output_result_dict["INCHI_AUX"] = "" # TODO: We should actually convert but we don't have this information now
-        output_result_dict["Library_Class"] = ""
-        output_result_dict["tags"] = ""
-        output_result_dict["IonMode"] = ""
-        output_result_dict["PI"] = ""
-        output_result_dict["Data_Collector"] = ""
-        output_result_dict["ExactMass"] = 0
-        output_result_dict["CAS_Number"] = ""
-        output_result_dict["Pubmed_ID"] = ""
-        output_result_dict["Organism"] = ""
-        output_result_dict["Compound_Source"] = ""
+    output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", "")).replace("\t", "")
+    output_result_dict["Ion_Source"] = str(library_spectrum.get("ion_source", "")).replace("\t", "")
+    output_result_dict["Instrument"] = str(library_spectrum.get("instrument", "")).replace("\t", "")
+    output_result_dict["LibMZ"] = library_spectrum.get("precursormz", "")
+    output_result_dict["Adduct"] = str(library_spectrum.get("adduct", "")).replace("\t", "")
+    output_result_dict["Charge"] = str(library_spectrum.get("charge", "")).replace("\t", "")
+    output_result_dict["Smiles"] = str(library_spectrum.get("smiles", "")).replace("\t", "")
+    
+    output_result_dict["INCHI"] = "" # TODO: We should actually convert but we don't have this information now
+    output_result_dict["INCHI_AUX"] = "" # TODO: We should actually convert but we don't have this information now
+    output_result_dict["Library_Class"] = ""
+    output_result_dict["tags"] = ""
+    output_result_dict["IonMode"] = ""
+    output_result_dict["PI"] = ""
+    output_result_dict["Data_Collector"] = ""
+    output_result_dict["ExactMass"] = 0
+    output_result_dict["CAS_Number"] = ""
+    output_result_dict["Pubmed_ID"] = ""
+    output_result_dict["Organism"] = ""
+    output_result_dict["Compound_Source"] = ""
 
-        #output_result_dict["IonMode"] = (library_spectrum["ion_mode"].replace("\t", ""))
+    #output_result_dict["IonMode"] = (library_spectrum["ion_mode"].replace("\t", ""))
 
-        # checking all the values, and change to N/A if empty
-        for key in output_result_dict:
-            if output_result_dict[key] == "":
-                output_result_dict[key] = "N/A"
+    # checking all the values, and change to N/A if empty
+    for key in output_result_dict:
+        if output_result_dict[key] == "":
+            output_result_dict[key] = "N/A"
 
     return output_result_dict
+
+
 
 # Here we will enrich the smiles
 def _enrich_annotations(output_result_dict):
@@ -233,7 +237,11 @@ def _enrich_annotations(output_result_dict):
 
     return output_result_dict
 
-def enrich_output(input_filename, output_filename, topk=None, library_summary_df=None, filtertostructures=False):
+def enrich_output(input_filename, output_filename, 
+                    topk=None, 
+                    library_summary_df=None, 
+                    filtertostructures=False,
+                    forceoffline=False):
     library_dict = {}
     if library_summary_df is not None:
         try:
@@ -253,7 +261,6 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
         print("Input file is not a valid tsv file")
         exit(0)
 
-    print(input_results_df)
 
     # Here we will try to filter to topk
     if topk is not None:
@@ -305,19 +312,22 @@ def enrich_output(input_filename, output_filename, topk=None, library_summary_df
         output_result_dict["FileScanUniqueID"] = (result_obj["FileScanUniqueID"])
         output_result_dict["NumberHits"] = (number_hits_per_query[result_obj["FileScanUniqueID"]])
 
-        # checking if GNPS
-        if "CCMSLIB" in str(spectrum_id):
-            output_result_dict = _enrich_gnps_annotation(output_result_dict)
+        # Here we are going to do the enrichment
+        if forceoffline:
+            output_result_dict = _enrich_librarysummary_annotations(output_result_dict, library_dict=library_dict)
         else:
-            # checking if in library summary
-            if library_summary_df is not None:
-                output_result_dict = _enrich_librarysummary_annotations(output_result_dict, library_dict=library_dict)
-        
-        # Doing further enrichment
-        try:
-            output_result_dict = _enrich_annotations(output_result_dict)
-        except:
-            pass
+            if "CCMSLIB" in str(spectrum_id):
+                output_result_dict = _enrich_gnps_annotation(output_result_dict)
+            else:
+                # checking if in library summary
+                if library_summary_df is not None:
+                    output_result_dict = _enrich_librarysummary_annotations(output_result_dict, library_dict=library_dict)            
+            
+            # Doing further enrichment
+            try:
+                output_result_dict = _enrich_annotations(output_result_dict)
+            except:
+                pass
 
         output_list.append(output_result_dict)
 
@@ -335,6 +345,7 @@ def main():
     parser.add_argument("--topk", default=None, type=int, help="Top K results per query, default no filter")
     parser.add_argument("--librarysummary", default=None, type=str, help="Library Summary, importnat for non-GNPS libraries")
     parser.add_argument("--filtertostructures", default="0", type=str, help="Filter to structures only if 1")
+    parser.add_argument("--forceoffline", default="No", type=str, help="Force offline so we can avoid using a bunch of API calls, Yes or No")
 
     args = parser.parse_args()
 
@@ -349,7 +360,8 @@ def main():
 
     enrich_output(input_result_filename, output_result_filename, topk=args.topk, 
                     library_summary_df=library_summary_df,
-                    filtertostructures=(args.filtertostructures == "1"))
+                    filtertostructures=(args.filtertostructures == "1"), 
+                    forceoffline=(args.forceoffline == "Yes"))
 
 if __name__ == "__main__":
     main()
