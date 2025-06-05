@@ -106,7 +106,7 @@ def _enrich_librarysummary_annotations(output_result_dict, library_dict=None):
     else:
         library_spectrum = {}
 
-    output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", "")).replace("\t", "")
+    output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", library_spectrum.get("NAME", ""))).replace("\t", "")
     output_result_dict["Ion_Source"] = str(library_spectrum.get("ion_source", "")).replace("\t", "")
     output_result_dict["Instrument"] = str(library_spectrum.get("instrument", "")).replace("\t", "")
     output_result_dict["LibMZ"] = library_spectrum.get("precursormz", "")
@@ -314,7 +314,9 @@ def enrich_output(input_filename, output_filename,
 
         # Here we are going to do the enrichment
         if forceoffline:
+            print("HERE!")
             output_result_dict = _enrich_librarysummary_annotations(output_result_dict, library_dict=library_dict)
+            print(output_result_dict)
         else:
             if "CCMSLIB" in str(spectrum_id):
                 output_result_dict = _enrich_gnps_annotation(output_result_dict)
@@ -357,6 +359,8 @@ def main():
         library_summary_df = pd.read_csv(args.librarysummary, sep="\t")
     except:
         library_summary_df = None
+        
+    print(args.forceoffline)
 
     enrich_output(input_result_filename, output_result_filename, topk=args.topk, 
                     library_summary_df=library_summary_df,
