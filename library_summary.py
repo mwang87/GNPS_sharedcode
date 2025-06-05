@@ -14,7 +14,7 @@ def main():
 
     output_list = []
 
-    with mgf.read(args.library) as reader:
+    with mgf.MGF(args.library) as reader:
         for spectrum in reader:
             # We will use the spectrum ID as the key for the dictionary
             spectrum_id = spectrum['params'].get('spectrumid', spectrum['params'].get('title', "No ID"))
