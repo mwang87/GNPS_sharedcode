@@ -106,7 +106,7 @@ def _enrich_librarysummary_annotations(output_result_dict, library_dict=None):
     else:
         library_spectrum = {}
 
-    output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", "")).replace("\t", "")
+    output_result_dict["Compound_Name"] = str(library_spectrum.get("compound_name", library_spectrum.get("NAME", ""))).replace("\t", "")
     output_result_dict["Ion_Source"] = str(library_spectrum.get("ion_source", "")).replace("\t", "")
     output_result_dict["Instrument"] = str(library_spectrum.get("instrument", "")).replace("\t", "")
     output_result_dict["LibMZ"] = library_spectrum.get("precursormz", "")
