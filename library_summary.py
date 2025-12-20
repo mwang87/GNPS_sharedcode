@@ -14,7 +14,21 @@ def main():
 
     output_list = []
 
-    with mgf.MGF(args.library) as reader:
+
+    # Pyteomics will fail silently if there is no SCANS= line, so we will warn the user
+    with open(args.library, "r") as f:
+        for line in f:
+            line = line.strip()
+
+            # If we hit SCANS=, we're done
+            if line.startswith("SCANS="):
+                break
+
+            # If we hit END IONS before SCANS=
+            if line == "END IONS":
+                raise ValueError('No Scan Numbers')
+
+    with mgf.read(args.library, index_by_scans=True) as reader:
         for spectrum in reader:
             # We will use the spectrum ID as the key for the dictionary
             spectrum_id = spectrum['params'].get('spectrumid', spectrum['params'].get('title', "No ID"))
@@ -45,6 +59,9 @@ def main():
 
     # creating an output df
     output_df = pd.DataFrame(output_list)
+    if output_df.empty:
+        # Create an empty DataFrame with the correct columns
+        output_df = pd.DataFrame(columns=["spectrum_id", "compound_name", "smiles", "collision_energy", "instrument", "ion_source", "charge", "adduct", "precursormz"])
     output_df.to_csv(args.output_summary, sep="\t", index=False)
 
 if __name__ == "__main__":
