@@ -113,6 +113,7 @@ def _enrich_librarysummary_annotations(output_result_dict, library_dict=None):
     output_result_dict["Adduct"] = str(library_spectrum.get("adduct", "")).replace("\t", "")
     output_result_dict["Charge"] = str(library_spectrum.get("charge", "")).replace("\t", "")
     output_result_dict["Smiles"] = str(library_spectrum.get("smiles", "")).replace("\t", "")
+    output_result_dict["LibScan"] = str(library_spectrum.get("scan", "")).replace("\t", "")
     
     output_result_dict["INCHI"] = "" # TODO: We should actually convert but we don't have this information now
     output_result_dict["INCHI_AUX"] = "" # TODO: We should actually convert but we don't have this information now
